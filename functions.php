@@ -1,4 +1,5 @@
 <?php    
+      function databaseConnection (): mysqli{ 
        $host = "localhost";
        $user = "root";
        $password = ""; // Default password for Laragon
@@ -10,5 +11,6 @@
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-    
+    return $conn;
+}
 ?>
