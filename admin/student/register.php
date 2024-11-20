@@ -31,15 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Add student to the database
             $stmt = $conn->prepare("INSERT INTO students (student_id, first_name, last_name) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $studentId, $firstName, $lastName);
-            $stmt->execute();
+
+            if ($stmt->execute()) {
+                $message = "Student successfully added!";
+                $messageType = "success";
+                // Clear variables after successful submission
+                $studentId = $firstName = $lastName = '';
+            } else {
+                $errorMessage = "Error occurred while adding the student.";
+            }
         }
 
         $stmt->close();
         $conn->close();
     }
 }
-
-
 ?>
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-5">    
 <div class="container">
@@ -50,15 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li class="breadcrumb-item active" aria-current="page">Register Student</li>
         </ol>
     </nav>
-     <!-- Dismissable Alert -->
-     <?php if ($errorMessage): ?>
+
+    <!-- Success Message -->
+    <?php if (!empty($message)): ?>
+    <div class="alert alert-<?php echo $messageType; ?> alert-dismissible fade show" role="alert">
+        <?php echo $message; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
+
+    <!-- Error Message -->
+    <?php if (!empty($errorMessage)): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <?php echo $errorMessage; ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <?php endif; ?>
-
-  
 
     <!-- Registration Form -->
     <div class="card">
@@ -66,15 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form action="" method="POST">
                 <div class="mb-3">
                     <label for="studentId" class="form-label">Student ID</label>
-                    <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter Student ID" >
+                    <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter Student ID" value="<?php echo isset($studentId) ? htmlspecialchars($studentId) : ''; ?>">
                 </div>
                 <div class="mb-3">
                     <label for="firstName" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" >
+                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" value="<?php echo isset($firstName) ? htmlspecialchars($firstName) : ''; ?>">
                 </div>
                 <div class="mb-3">
                     <label for="lastName" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" >
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" value="<?php echo isset($lastName) ? htmlspecialchars($lastName) : ''; ?>">
                 </div>
                 <button type="submit" class="btn btn-primary">Add Student</button>
             </form>
@@ -97,7 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tbody>
                 <?php
                 $conn = databaseConnection();
-                $result = $conn->query("SELECT * FROM students ORDER BY id DESC");
+                // Fetch students in ascending order (oldest first)
+                $result = $conn->query("SELECT * FROM students ORDER BY id ASC");
 
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
@@ -107,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td>
                                 <a href='edit.php?id={$row['id']}' class='btn btn-sm btn-info'>Edit</a>
                                 <a href='delete.php?id={$row['id']}' class='btn btn-sm btn-danger'>Delete</a>
-
                                 <button class='btn btn-sm btn-warning delete-btn' data-id='{$row['id']}'>Attach Subject</button>
                             </td>
                         </tr>";
