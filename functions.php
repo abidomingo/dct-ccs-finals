@@ -53,5 +53,11 @@ function displayAlert($errors, $type = 'danger') {
     return $message;
 }
 
+//Logout function 
+function logout() {
+    session_destroy();
+    header("Location:/index.php");
+}
+
 
 ?>
