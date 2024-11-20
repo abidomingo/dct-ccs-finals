@@ -1,6 +1,7 @@
 <?php
 ob_start(); // Start output buffering
 include("../../functions.php");
+$Pagetitle = "Delete Student";
 include("../partials/header.php");
 include("../partials/side-bar.php");
 
