@@ -1,14 +1,15 @@
 <?php
+ob_start(); // Start output buffering to prevent headers being sent before the redirect
+
 include("../../functions.php");
 include("../partials/header.php");
 include("../partials/side-bar.php");
 
 $errorMessage = null;
-$message = '';
-$messageType = '';
 
 $conn = databaseConnection();
 
+// Ensure the student ID exists in the URL
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $studentId = $_GET['id'];
 
@@ -20,7 +21,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
     if ($result->num_rows === 1) {
         $student = $result->fetch_assoc();
-        $studentId = $student['id'];
         $studentCode = $student['student_id'];
         $firstName = $student['first_name'];
         $lastName = $student['last_name'];
@@ -36,24 +36,27 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 // Handle the update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $studentCode = trim($_POST['studentCode']);
     $firstName = trim($_POST['firstName']);
     $lastName = trim($_POST['lastName']);
 
-    if (empty($studentCode) || empty($firstName) || empty($lastName)) {
+    // Validate inputs
+    if (empty($firstName) || empty($lastName)) {
         $errorMessage = "All fields are required!";
     } else {
-        $stmt = $conn->prepare("UPDATE students SET student_id = ?, first_name = ?, last_name = ? WHERE id = ?");
-        $stmt->bind_param("sssi", $studentCode, $firstName, $lastName, $studentId);
+        // Update student details
+        $stmt = $conn->prepare("UPDATE students SET first_name = ?, last_name = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $firstName, $lastName, $studentId);
 
         if ($stmt->execute()) {
-            $message = "Student details successfully updated!";
-            $messageType = "success";
+            // Redirect back to the register page after successful update
+            header("Location: register.php");
+            exit; // Ensure no further code is executed after redirection
         } else {
             $errorMessage = "Error occurred while updating the student.";
         }
     }
 }
+
 ?>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-5">
@@ -66,14 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li class="breadcrumb-item active" aria-current="page">Edit Student</li>
             </ol>
         </nav>
-
-        <!-- Success Message -->
-        <?php if (!empty($message)): ?>
-            <div class="alert alert-<?php echo $messageType; ?> alert-dismissible fade show" role="alert">
-                <?php echo $message; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
 
         <!-- Error Message -->
         <?php if (!empty($errorMessage)): ?>
@@ -88,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="" method="POST">
                     <div class="mb-3">
                         <label for="studentCode" class="form-label">Student ID</label>
-                        <input type="text" class="form-control" id="studentCode" name="studentCode" value="<?php echo htmlspecialchars($studentCode); ?>">
+                        <input type="text" class="form-control" id="studentCode" name="studentCode" value="<?php echo htmlspecialchars($studentCode); ?>" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="firstName" class="form-label">First Name</label>
@@ -108,4 +103,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php
 $conn->close();
 include("../partials/footer.php");
+ob_end_flush(); // Flush and turn off output buffering
 ?>
