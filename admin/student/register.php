@@ -1,4 +1,5 @@
 <?php
+$title = "Register Student";
 include("../../functions.php");
 include("../partials/header.php");
 include("../partials/side-bar.php");

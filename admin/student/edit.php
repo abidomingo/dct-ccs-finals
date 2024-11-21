@@ -1,6 +1,6 @@
 <?php
 ob_start(); // Start output buffering to prevent headers being sent before the redirect
-
+$title = "Edit Student";
 include("../../functions.php");
 include("../partials/header.php");
 include("../partials/side-bar.php");

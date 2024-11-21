@@ -1,5 +1,6 @@
 <?php
 ob_start();
+$title = "Add Subject";
 include("../../functions.php");
 include("../partials/header.php");
 include("../partials/side-bar.php");
