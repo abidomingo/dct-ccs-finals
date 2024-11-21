@@ -1,5 +1,6 @@
 <?php
 ob_start();
+$title = "Edit Subject";
 include("../../functions.php");
 include("../partials/header.php");
 include("../partials/side-bar.php");

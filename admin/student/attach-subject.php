@@ -1,5 +1,5 @@
 <?php
-
+$$title = "Attach Subject";
 require_once '../partials/header.php';
 require_once '../partials/side-bar.php';
 require_once '../../functions.php';
