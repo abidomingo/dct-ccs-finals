@@ -9,6 +9,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Initialize messages
+$error_message = '';
+$success_message = '';
+
+
 // Get the record ID from POST or GET
 $record_id = isset($_POST['id']) ? intval($_POST['id']) : (isset($_GET['id']) ? intval($_GET['id']) : 0);
 
