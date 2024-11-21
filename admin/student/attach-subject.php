@@ -151,22 +151,26 @@ if (isset($_GET['id'])) {
             <tbody>
                 <?php if ($attached_subjects && $attached_subjects->num_rows > 0): ?>
                     <?php while ($row = $attached_subjects->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row['subject_code']); ?></td>
-                            <td><?php echo htmlspecialchars($row['subject_name']); ?></td>
-                            <td><?php echo $row['grade'] > 0 ? number_format($row['grade'], 2) : '--.--'; ?></td>
-                            <td>
-                                <form method="get" action="detach-subject.php" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Detach</button>
-                                </form>
-                                <form method="post" action="assign-grade.php" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" class="btn btn-success btn-sm">Assign Grade</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
+    <tr>
+        <td><?php echo htmlspecialchars($row['subject_code']); ?></td>
+        <td><?php echo htmlspecialchars($row['subject_name']); ?></td>
+        <td><?php echo $row['grade'] > 0 ? number_format($row['grade'], 2) : '--.--'; ?></td>
+        <td>
+            <!-- Detach Button -->
+            <form method="get" action="dettach-subject.php" style="display:inline-block;">
+                <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
+                <button type="submit" class="btn btn-danger btn-sm">Detach</button>
+            </form>
+
+            <!-- Assign Grade Button -->
+            <form method="post" action="assign-grade.php" style="display:inline-block;">
+                <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
+                <button type="submit" class="btn btn-success btn-sm">Assign Grade</button>
+            </form>
+        </td>
+    </tr>
+<?php endwhile; ?>
+
                 <?php else: ?>
                     <tr>
                         <td colspan="4">No subjects attached.</td>
