@@ -115,16 +115,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
-                            <td>{$row['student_id']}</td>
-                            <td>{$row['first_name']}</td>
-                            <td>{$row['last_name']}</td>
+                            <td>" . htmlspecialchars($row['student_id']) . "</td>
+                            <td>" . htmlspecialchars($row['first_name']) . "</td>
+                            <td>" . htmlspecialchars($row['last_name']) . "</td>
                             <td>
-                                <a href='edit.php?id={$row['id']}' class='btn btn-sm btn-info'>Edit</a>
-                                <a href='delete.php?id={$row['id']}' class='btn btn-sm btn-danger'>Delete</a>
-                                <button class='btn btn-sm btn-warning delete-btn' data-id='{$row['id']}'>Attach Subject</button>
+                                <a href='edit.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-sm btn-info'>Edit</a>
+                                <a href='delete.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-sm btn-danger'>Delete</a>
+                                <a href='attach-subject.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-sm btn-warning'>Attach Subject</a>
                             </td>
                         </tr>";
                 }
+                
 
                 $conn->close();
                 ?>
