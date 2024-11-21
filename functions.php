@@ -77,4 +77,73 @@ function getSelectedStudentData($student_id) {
 }
 
 
+function countStudentsPassed($connection) {
+    $query = "
+        SELECT COUNT(*) AS passed_count
+        FROM (
+            SELECT student_id, AVG(grade) AS avg_grade
+            FROM students_subjects
+            WHERE grade IS NOT NULL
+            GROUP BY student_id
+            HAVING avg_grade >= 75
+        ) AS passed_students";
+    
+    $result = $connection->query($query);
+    if ($result) {
+        $row = $result->fetch_assoc();
+        return (int) ($row['passed_count'] ?? 0);
+    }
+
+    return 0; // Return 0 if the query fails
+}
+
+
+function countStudentsFailed($connection) {
+    $query = "
+        SELECT COUNT(*) AS failed_count
+        FROM (
+            SELECT student_id, AVG(grade) AS avg_grade
+            FROM students_subjects
+            WHERE grade IS NOT NULL
+            GROUP BY student_id
+            HAVING avg_grade < 75
+        ) AS failed_students";
+    
+    $result = $connection->query($query);
+    if ($result) {
+        $row = $result->fetch_assoc();
+        return (int) ($row['failed_count'] ?? 0);
+    }
+
+    return 0; // Return 0 if the query fails
+}
+
+
+function totalRegisteredStudents($db) {
+    $query = "SELECT COUNT(*) AS total_students FROM students";
+    $result = $db->query($query);
+    
+    if ($result) {
+        $row = $result->fetch_assoc();
+        return (int) ($row['total_students'] ?? 0);
+    }
+
+    return 0; // Return 0 if the query fails
+}
+
+
+function totalSubjectsInDatabase($db) {
+    $query = "SELECT COUNT(*) AS total_subjects FROM subjects";
+    $result = $db->query($query);
+    
+    if ($result) {
+        $row = $result->fetch_assoc();
+        return (int) ($row['total_subjects'] ?? 0);
+    }
+
+    return 0; // Return 0 if the query fails
+}
+
+
+
 ?>
